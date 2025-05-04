@@ -1,5 +1,10 @@
 package user
 
+import (
+	"encoding/json"
+	"saham-app/helpers"
+)
+
 type User struct {
 	ID       int
 	Username string
@@ -9,9 +14,24 @@ type User struct {
 var Users []User
 
 func init() {
-	Users = []User{
-		{ID: 1, Username: "admin", Password: "admin"},
-		{ID: 2, Username: "user", Password: "user"},
+	if helpers.FileExists("data/users.csv") {
+		content, err := helpers.ReadFile("data/users.csv")
+
+		if err != nil {
+			panic(err)
+		}
+
+		jsonContent, err := json.Marshal(content)
+		if err != nil {
+			panic(err)
+		}
+		helpers.LoadFromJSON(jsonContent, &Users)
+
+	} else {
+		Users = []User{
+			{ID: 1, Username: "admin", Password: "admin"},
+			{ID: 2, Username: "user", Password: "user"},
+		}
 	}
 }
 

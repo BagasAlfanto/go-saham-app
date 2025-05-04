@@ -53,12 +53,18 @@ func main() {
 			fmt.Print("Masukan Pilihan Anda : ")
 			fmt.Scan(&choice)
 		}
+		helpers.ClearScreen()
 
 		switch choice {
 		case 1:
+			controllers.ShowSaham()
 		case 2:
 		case 3:
 		case 4:
+		}
+
+		if choice != 3 {
+			choice = 0
 		}
 	}
 
