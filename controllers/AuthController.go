@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"saham-app/handlers/auth"
 	"saham-app/helpers"
-	"saham-app/model/user"
 )
 
 func Login() bool {
@@ -32,7 +31,7 @@ func Login() bool {
 }
 
 func Register() bool {
-	var username, password, retryPassword string
+	var username, password, confirmPassword string
 	isRegistered := false
 
 	helpers.ClearScreen()
@@ -46,17 +45,30 @@ func Register() bool {
 		fmt.Scan(&password)
 
 		fmt.Print("Ulangi Password : ")
-		fmt.Scan(&retryPassword)
+		fmt.Scan(&confirmPassword)
 
 		helpers.ClearScreen()
-		if password != retryPassword {
-			fmt.Println("Password tidak sama")
-		} else if user.Register(username, password) {
-			fmt.Println("Registrasi berhasil")
+		for isCorrect := false; !isCorrect; {
+			if password == confirmPassword {
+				isCorrect = true
+			} else {
+				fmt.Println("Password tidak sama, silakan coba lagi")
+				fmt.Print("Password : ")
+				fmt.Scan(&password)
+
+				fmt.Print("Ulangi Password : ")
+				fmt.Scan(&confirmPassword)
+			}
+		}
+
+		user := auth.Register(username, password)
+		if user != nil {
+			fmt.Println("Register berhasil")
 			isRegistered = true
 		} else {
-			fmt.Println("Registrasi gagal, username sudah terdaftar")
+			fmt.Println("Username sudah terdaftar, silakan coba lagi")
 		}
+
 	}
 
 	return isRegistered

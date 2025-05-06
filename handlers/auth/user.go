@@ -12,3 +12,14 @@ func Authentic(username, password string) bool {
 	return success
 }
 
+func Register(username, password string) *user.User {
+	userData := user.User{
+		ID:       user.CreateID(),
+		Username: username,
+		Password: password,
+		Saldo:    1000000,
+	}
+
+	user.InsertUser(userData)
+	return &userData
+}

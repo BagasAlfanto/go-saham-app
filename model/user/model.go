@@ -1,7 +1,6 @@
 package user
 
 import (
-	"encoding/json"
 	"saham-app/helpers"
 )
 
@@ -9,30 +8,38 @@ type User struct {
 	ID       int
 	Username string
 	Password string
+	Saldo    int
 }
 
 var Users []User
 
 func init() {
-	if helpers.FileExists("data/users.csv") {
-		content, err := helpers.ReadFile("data/users.csv")
-
+	if helpers.FileExists("user.json") {
+		content, err := helpers.ReadFile("user.json")
 		if err != nil {
 			panic(err)
 		}
 
-		jsonContent, err := json.Marshal(content)
-		if err != nil {
-			panic(err)
-		}
-		helpers.LoadFromJSON(jsonContent, &Users)
+		helpers.LoadFromJSON(content, &Users)
 
 	} else {
 		Users = []User{
-			{ID: 1, Username: "admin", Password: "admin"},
-			{ID: 2, Username: "user", Password: "user"},
+			{ID: 1, Username: "admin", Password: "admin", Saldo: 1000000},
+			{ID: 2, Username: "user", Password: "user", Saldo: 1000000},
+		}
+		content, err := helpers.SaveToJSON(Users)
+
+		if err != nil {
+			panic(err)
+		}
+
+		err = helpers.SaveFile("user.json", content)
+
+		if err != nil {
+			panic(err)
 		}
 	}
+
 }
 
 func CheckPassword(username, password string) (bool, string) {
@@ -57,13 +64,28 @@ func CreateID() int {
 	return len(Users) + 1
 }
 
-func Register(username, password string) bool {
-	for _, user := range Users {
-		if user.Username == username {
-			return false
-		}
+func InsertUser(user User) {
+	user.ID = CreateID()
+	Users = append(Users, user)
+
+	content, err := helpers.SaveToJSON(Users)
+	if err != nil {
+		panic(err)
 	}
-	newUser := User{ID: CreateID(), Username: username, Password: password}
-	Users = append(Users, newUser)
-	return true
+
+	err = helpers.UpdateFile("user.json", content)
+	if err != nil {
+		panic(err)
+	}
 }
+
+// func Register(username, password string) bool {
+// 	for _, user := range Users {
+// 		if user.Username == username {
+// 			return false
+// 		}
+// 	}
+// 	newUser := User{ID: CreateID(), Username: username, Password: password}
+// 	Users = append(Users, newUser)
+// 	return true
+// }

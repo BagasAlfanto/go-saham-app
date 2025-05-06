@@ -27,3 +27,16 @@ func DisplayMainMenu() {
 	fmt.Println("4. Logout")
 	fmt.Println("======================")
 }
+
+func ConfirmationScreen(messages ...string) {
+	for _, message := range messages {
+		fmt.Println(message)
+	}
+
+	if len(messages) > 0 {
+		fmt.Println()
+	}
+
+	fmt.Println("Tekan tombol enter untuk melanjutkan...")
+	fmt.Scanln()
+}
