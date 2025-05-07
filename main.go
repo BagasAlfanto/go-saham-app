@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"saham-app/controllers"
 	"saham-app/helpers"
+	"saham-app/model/saham"
+	"saham-app/model/user"
 )
 
 func main() {
@@ -46,8 +48,10 @@ func main() {
 	}
 
 	for isRunning := false; !isRunning; {
+		accountUsed := user.GetUser()
+
 		helpers.ClearScreen()
-		helpers.DisplayMainMenu()
+		helpers.DisplayMainMenu(accountUsed.Username)
 
 		for choice < 1 || choice > 3 {
 			fmt.Print("Masukan Pilihan Anda : ")
@@ -57,13 +61,16 @@ func main() {
 
 		switch choice {
 		case 1:
-			controllers.ShowSaham()
+			controllers.SahamMenu()
 		case 2:
+			saham.UpdatePrice()
 		case 3:
+			controllers.ShowProfile()
 		case 4:
+			isRunning = true
 		}
 
-		if choice != 3 {
+		if choice != 4 {
 			choice = 0
 		}
 	}
