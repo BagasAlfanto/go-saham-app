@@ -12,20 +12,14 @@ func FileExists(filename string) bool {
 	return !os.IsNotExist(err)
 }
 
-func SaveFile(filename string, data []byte) error {
-	if FileExists(filename) {
-		return fmt.Errorf("file already exists")
-	}
-
-	return os.WriteFile(fmt.Sprintf("%s/%s", fileStoragePath, filename), data, 0666)
-}
-
 func UpdateFile(filename string, data []byte) error {
+	fullPath := fmt.Sprintf("%s/%s", fileStoragePath, filename)
+
 	if !FileExists(filename) {
-		return fmt.Errorf("file does not exist")
+		fmt.Println("File belum ada, akan dibuat baru.")
 	}
 
-	return os.WriteFile(fmt.Sprintf("%s/%s", fileStoragePath, filename), data, 0666)
+	return os.WriteFile(fullPath, data, 0666)
 }
 
 func ReadFile(filename string) ([]byte, error) {
