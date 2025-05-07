@@ -1,17 +1,18 @@
 package user
 
-import (
-	"saham-app/helpers"
-)
+import "saham-app/helpers"
 
 type User struct {
 	ID       int
 	Username string
 	Password string
 	Saldo    int
+	Saham    []string
 }
 
 var Users []User
+
+var UserLogin *User
 
 func init() {
 	if helpers.FileExists("user.json") {
@@ -24,8 +25,8 @@ func init() {
 
 	} else {
 		Users = []User{
-			{ID: 1, Username: "admin", Password: "admin", Saldo: 1000000},
-			{ID: 2, Username: "user", Password: "user", Saldo: 1000000},
+			{ID: 1, Username: "admin", Password: "admin", Saldo: 1000000, Saham: []string{"awokaowk"}},
+			{ID: 2, Username: "user", Password: "user", Saldo: 1000000, Saham: []string{"awkward", "saham"}},
 		}
 		content, err := helpers.SaveToJSON(Users)
 
@@ -33,7 +34,7 @@ func init() {
 			panic(err)
 		}
 
-		err = helpers.SaveFile("user.json", content)
+		err = helpers.UpdateFile("user.json", content)
 
 		if err != nil {
 			panic(err)
@@ -46,6 +47,7 @@ func CheckPassword(username, password string) (bool, string) {
 	for _, user := range Users {
 		if user.Username == username {
 			if user.Password == password {
+				UserLogin = &user
 				return true, "Login berhasil"
 			} else {
 				return false, "Password salah"
@@ -77,6 +79,13 @@ func InsertUser(user User) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func GetUser() User {
+	Username := UserLogin.Username
+	Saldo := UserLogin.Saldo
+	Stock := UserLogin.Saham
+	return User{Username: Username, Saldo: Saldo, Saham: Stock}
 }
 
 // func Register(username, password string) bool {
