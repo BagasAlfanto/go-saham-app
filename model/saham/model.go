@@ -7,6 +7,10 @@ import (
 	"strings"
 )
 
+/*
+ * Struct saham
+ *
+ */
 type Saham struct {
 	IDSaham         int
 	StockCode       string
@@ -18,108 +22,190 @@ var daftarSaham []Saham
 
 var SearchSaham *Saham
 
+/*
+ * Load daftar saham dari database
+ *
+ */
 func init() {
-	daftarSaham = []Saham{
-		{1, "AAPL", "Apple Inc.", 150},
-		{2, "GOOGL", "Alphabet Inc.", 2800},
-		{3, "AMZN", "Amazon.com Inc.", 3400},
-		{4, "MSFT", "Microsoft Corp.", 299},
-		{5, "TSLA", "Tesla Inc.", 700},
-		{6, "FB", "Meta Platforms Inc.", 350},
+	if helpers.FileExists("daftarsaham.json") {
+		content, err := helpers.ReadFile("daftarsaham.json")
+		if err != nil {
+			panic(err)
+		}
+
+		helpers.LoadFromJSON(content, &daftarSaham)
+	} else {
+		daftarSaham = []Saham{
+			{1, "AAPL", "Apple Inc.", 150},
+			{2, "GOOGL", "Alphabet Inc.", 2800},
+			{3, "AMZN", "Amazon.com Inc.", 3400},
+			{4, "MSFT", "Microsoft Corp.", 299},
+			{5, "TSLA", "Tesla Inc.", 700},
+			{6, "FB", "Meta Platforms Inc.", 350},
+		}
+		content, err := helpers.SaveToJSON(daftarSaham)
+
+		if err != nil {
+			panic(err)
+		}
+
+		err = helpers.UpdateFile("daftarsaham.json", content)
+
+		if err != nil {
+			panic(err)
+		}
 	}
+
 }
 
+/*
+ * Mendapatkan data saham
+ *
+ */
 func GetSaham() []Saham {
 	return daftarSaham
 }
 
+/*
+ * Update harga saham
+ *
+ */
 func ChangePricing() int {
 	change := rand.Intn(201) - 100
 	return change
 }
 
+/*
+ * Implementasi update harga saham
+ *
+ */
 func UpdatePrice() {
-	random := rand.Intn(len(daftarSaham))
-	priceChange := ChangePricing()
+	for i := range daftarSaham {
+		priceChange := ChangePricing()
+		daftarSaham[i].Price_Per_Share += priceChange
 
-	daftarSaham[random].Price_Per_Share += priceChange
-	if daftarSaham[random].Price_Per_Share < 0 {
-		daftarSaham[random].Price_Per_Share = 0
+		if daftarSaham[i].Price_Per_Share < 0 {
+			daftarSaham[i].Price_Per_Share = 0
+		}
+		if daftarSaham[i].Price_Per_Share > 5000 {
+			daftarSaham[i].Price_Per_Share = 5000
+		}
 	}
-	if daftarSaham[random].Price_Per_Share > 5000 {
-		daftarSaham[random].Price_Per_Share = 5000
-	}
-	daftarSaham[random].IDSaham = random + 1
 }
 
+/*
+ * Searching Saham
+ *
+ */
 func Searching(data string) string {
+	helpers.ClearScreen()
 	for _, saham := range daftarSaham {
 		if strings.EqualFold(saham.StockCode, data) || strings.Contains(strings.ToLower(saham.CompanyName), strings.ToLower(data)) {
 			SearchSaham = &saham
 			return fmt.Sprintf(
-				"ID: %d\nKode Saham: %s\nPerusahaan: %s\nHarga per Lembar: %d",
-				saham.IDSaham, saham.StockCode, saham.CompanyName, saham.Price_Per_Share,
+				"| %-15s %-30s %-12d |",
+				saham.StockCode, saham.CompanyName, saham.Price_Per_Share,
 			)
 		}
 	}
 	return "Saham tidak ditemukan."
 }
 
-func ShortAscending() {
-	var back string
+/*
+ * Mengurutkan daftar saham dari harga terendah
+ *
+ */
+func SortAscending() {
+	sorted := make([]Saham, len(daftarSaham))
+	copy(sorted, daftarSaham)
 
-	n := len(daftarSaham)
+	helpers.ClearScreen()
+	n := len(sorted)
 	for i := 1; i < n; i++ {
-		key := daftarSaham[i]
+		key := sorted[i]
 		j := i - 1
 
-		for j >= 0 && daftarSaham[j].Price_Per_Share > key.Price_Per_Share {
-			daftarSaham[j+1] = daftarSaham[j]
+		for j >= 0 && sorted[j].Price_Per_Share > key.Price_Per_Share {
+			sorted[j+1] = sorted[j]
 			j--
 		}
-		daftarSaham[j+1] = key
+		sorted[j+1] = key
 	}
-	
+
 	helpers.DisplayShowSaham()
-	for _, saham := range daftarSaham {
+	for _, saham := range sorted {
 		fmt.Printf("| %-15s %-30s %-12d |\n", saham.StockCode, saham.CompanyName, saham.Price_Per_Share)
 	}
 	fmt.Println("===============================================================")
 
-	for back != "ya" {
-		fmt.Println("Kembali ke menu utama? (ya)")
-		fmt.Scan(&back)
-		UpdatePrice()
-		helpers.ClearScreen()
-	}
+	helpers.ConfirmationScreen()
 }
 
-func ShortDescending() {
-	var back string
+/*
+ * Mengurutkan daftar saham dari harga tertinggi
+ *
+ */
+func SortDescending() {
+	sorted := make([]Saham, len(daftarSaham))
+	copy(sorted, daftarSaham)
 
-	n := len(daftarSaham)
+	helpers.ClearScreen()
+	n := len(sorted)
 	for i := 1; i < n; i++ {
-		key := daftarSaham[i]
+		key := sorted[i]
 		j := i - 1
 
-		for j >= 0 && daftarSaham[j].Price_Per_Share < key.Price_Per_Share {
-			daftarSaham[j+1] = daftarSaham[j]
+		for j >= 0 && sorted[j].Price_Per_Share < key.Price_Per_Share {
+			sorted[j+1] = sorted[j]
 			j--
 		}
-		daftarSaham[j+1] = key
+		sorted[j+1] = key
 	}
 
 	helpers.DisplayShowSaham()
-	for _, saham := range daftarSaham {
+	for _, saham := range sorted {
 		fmt.Printf("| %-15s %-30s %-12d |\n", saham.StockCode, saham.CompanyName, saham.Price_Per_Share)
 	}
 	fmt.Println("===============================================================")
 
-	for back != "ya" {
-		fmt.Println("Kembali ke menu utama? (ya)")
-		fmt.Scan(&back)
-		UpdatePrice()
-		helpers.ClearScreen()
+	helpers.ConfirmationScreen()
+}
 
+/*
+ * Mencari saham by kode / nama perusahaan
+ *
+ */
+func FindSahamByCodeOrName(input string) *Saham {
+	for _, s := range daftarSaham {
+		if strings.EqualFold(s.StockCode, input) || strings.Contains(strings.ToLower(s.CompanyName), strings.ToLower(input)) {
+			return &s
+		}
+	}
+	return nil
+}
+
+func FindSahamByName(name string) *Saham {
+	for _, s := range daftarSaham {
+		if strings.EqualFold(s.CompanyName, name) {
+			return &s
+		}
+	}
+	return nil
+}
+
+/*
+ * Menyimpan perubahan harga saham
+ *
+ */
+func SaveSaham() {
+	content, err := helpers.SaveToJSON(daftarSaham)
+	if err != nil {
+		fmt.Println("❌ Gagal menyimpan saham:", err)
+		return
+	}
+
+	err = helpers.UpdateFile("daftarsaham.json", content)
+	if err != nil {
+		fmt.Println("❌ Gagal update file daftarsaham.json:", err)
 	}
 }
