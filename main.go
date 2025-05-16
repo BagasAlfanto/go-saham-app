@@ -1,3 +1,19 @@
+// ================================================
+// Aplikasi Simulasi Saham (saham-app)
+// ------------------------------------------------
+// saham-app merupakan aplikasi simulasi saham
+// sederhana yang dapat memudahkan pengguna
+// untuk belajar tentang dunia saham.
+// Apliaksi ini dibuat menggunakan bahasa Go
+// dan hanya bisa dijalankan didalam terminal
+// ------------------------------------------------
+// Version     : 1.0
+// Date        : 2025-04-28
+// License     : Unlicense
+// OS          : Windows
+// Language    : Go
+// ================================================
+
 package main
 
 import (
@@ -31,9 +47,6 @@ func main() {
 			controllers.Register()
 		case 3:
 			isLogged = true
-		default:
-			fmt.Println("Pilihan tidak valid, silakan coba lagi")
-			helpers.Confirmation()
 		}
 
 		if choice != 3 {
@@ -51,9 +64,10 @@ func main() {
 		accountUsed := user.GetUser()
 
 		helpers.ClearScreen()
+
 		helpers.DisplayMainMenu(accountUsed.Username)
 
-		for choice < 1 || choice > 3 {
+		for choice < 1 || choice > 5 {
 			fmt.Print("Masukan Pilihan Anda : ")
 			fmt.Scan(&choice)
 		}
@@ -63,18 +77,22 @@ func main() {
 		case 1:
 			controllers.SahamMenu()
 		case 2:
-			saham.UpdatePrice()
+			controllers.BuyingSaham()
 		case 3:
-			controllers.ShowProfile()
+			controllers.SellSaham()
 		case 4:
+			controllers.ShowProfile()
+
+		case 5:
 			isRunning = true
+			saham.SaveSaham()
+			fmt.Println("Terimakasih sudah menggunakan saham-app, selamat tinggal..")
 		}
 
-		if choice != 4 {
+		if choice != 5 {
 			choice = 0
 		}
+		saham.UpdatePrice()
 	}
-
-	fmt.Println("=== Program Selesai ===")
 
 }
