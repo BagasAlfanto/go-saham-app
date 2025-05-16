@@ -1,19 +1,29 @@
 package user
 
-import "saham-app/helpers"
+import (
+	"saham-app/helpers"
+	"saham-app/model/transaction"
+)
 
+/*
+ * Struct User
+ *
+ */
 type User struct {
 	ID       int
 	Username string
 	Password string
 	Saldo    int
-	Saham    []string
 }
 
 var Users []User
 
 var UserLogin *User
 
+/*
+ * Load daftar akun dari database
+ *
+ */
 func init() {
 	if helpers.FileExists("user.json") {
 		content, err := helpers.ReadFile("user.json")
@@ -25,8 +35,9 @@ func init() {
 
 	} else {
 		Users = []User{
-			{ID: 1, Username: "admin", Password: "admin", Saldo: 1000000, Saham: []string{"awokaowk"}},
-			{ID: 2, Username: "user", Password: "user", Saldo: 1000000, Saham: []string{"awkward", "saham"}},
+			{1, "admin", "admin", 1000000},
+			{2, "user", "user", 1000000},
+			{3, "bagas", "pemula", 100000},
 		}
 		content, err := helpers.SaveToJSON(Users)
 
@@ -43,20 +54,27 @@ func init() {
 
 }
 
+/*
+ * Validasi password user
+ *
+ */
 func CheckPassword(username, password string) (bool, string) {
-	for _, user := range Users {
-		if user.Username == username {
-			if user.Password == password {
-				UserLogin = &user
+	for i := range Users {
+		if Users[i].Username == username {
+			if Users[i].Password == password {
+				UserLogin = &Users[i]
 				return true, "Login berhasil"
-			} else {
-				return false, "Password salah"
 			}
+			return false, "Password salah"
 		}
 	}
 	return false, "Username tidak ditemukan"
 }
 
+/*
+ * Membuat ID baru untuk user
+ *
+ */
 func CreateID() int {
 	for _, user := range Users {
 		if user.ID > len(Users) {
@@ -66,6 +84,10 @@ func CreateID() int {
 	return len(Users) + 1
 }
 
+/*
+ * Mengimpan data user ke database
+ *
+ */
 func InsertUser(user User) {
 	user.ID = CreateID()
 	Users = append(Users, user)
@@ -81,20 +103,66 @@ func InsertUser(user User) {
 	}
 }
 
+/*
+ * Load username & saldo by user account
+ *
+ */
 func GetUser() User {
 	Username := UserLogin.Username
 	Saldo := UserLogin.Saldo
-	Stock := UserLogin.Saham
-	return User{Username: Username, Saldo: Saldo, Saham: Stock}
+	return User{Username: Username, Saldo: Saldo}
 }
 
-// func Register(username, password string) bool {
-// 	for _, user := range Users {
-// 		if user.Username == username {
-// 			return false
-// 		}
-// 	}
-// 	newUser := User{ID: CreateID(), Username: username, Password: password}
-// 	Users = append(Users, newUser)
-// 	return true
-// }
+/*
+ * Cek apakah sudah ada username yang sama
+ *
+ */
+func IsUsernameExist(username string) bool {
+	for _, user := range Users {
+		if user.Username == username {
+			return true
+		}
+	}
+	return false
+}
+
+/*
+ * Menyimpan user baru
+ *
+ */
+func SaveUsers() {
+	content, err := helpers.SaveToJSON(Users)
+	if err != nil {
+		panic(err)
+	}
+
+	err = helpers.UpdateFile("user.json", content)
+	if err != nil {
+		panic(err)
+	}
+}
+
+/*
+ * Load daftar saham by user
+ *
+ */
+func GetPortfolio(userID int) map[string]struct {
+	TotalLot   int
+	TotalModal int
+} {
+	result := make(map[string]struct {
+		TotalLot   int
+		TotalModal int
+	})
+
+	for _, t := range transaction.Transactions {
+		if t.UserID == userID {
+			val := result[t.NamaPerusahaan]
+			val.TotalLot += t.JumlahLot
+			val.TotalModal += t.Total
+			result[t.NamaPerusahaan] = val
+		}
+	}
+
+	return result
+}
