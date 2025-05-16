@@ -6,30 +6,45 @@ import (
 	"saham-app/helpers"
 )
 
+/*
+ *Menangani proses login
+ *
+ */
 func Login() bool {
 	var username, password string
 	isLogged := false
 
 	for !isLogged {
-		fmt.Println("====== Login ======")
-		fmt.Print("Username : ")
-		fmt.Scan(&username)
+		for i := 1; i <= 3; i++ {
+			fmt.Println("====== Login ======")
+			fmt.Print("Username : ")
+			fmt.Scan(&username)
 
-		fmt.Print("Password : ")
-		fmt.Scan(&password)
+			fmt.Print("Password : ")
+			fmt.Scan(&password)
 
-		helpers.ClearScreen()
-		if auth.Authentic(username, password) {
-			isLogged = true
-		} else {
-			fmt.Println("Login gagal, silakan coba lagi")
+			helpers.ClearScreen()
+			if auth.Authentic(username, password) {
+				isLogged = true
+				break
+
+			} else {
+				helpers.ShowMessages()
+			}
+		}
+		if !isLogged {
+			helpers.GetMessages("Jika anda lupa akun anda silahkan buat akun kembali")
+			break
 		}
 	}
 
 	return isLogged
-
 }
 
+/*
+ *Menangani proses Register
+ *
+ */
 func Register() bool {
 	var username, password, confirmPassword string
 	isRegistered := false
@@ -52,23 +67,24 @@ func Register() bool {
 			if password == confirmPassword {
 				isCorrect = true
 			} else {
-				fmt.Println("Password tidak sama, silakan coba lagi")
+				fmt.Println("❌ Password tidak sama, silakan coba lagi")
 				fmt.Print("Password : ")
 				fmt.Scan(&password)
 
 				fmt.Print("Ulangi Password : ")
 				fmt.Scan(&confirmPassword)
 			}
+			helpers.ClearScreen()
 		}
 
 		user := auth.Register(username, password)
 		if user != nil {
-			fmt.Println("Register berhasil")
+			helpers.GetMessages("✅ Register Berhasil")
 			isRegistered = true
 		} else {
-			fmt.Println("Username sudah terdaftar, silakan coba lagi")
+			helpers.GetMessages("❌ Username sudah terdaftar, silahkan coba lagi")
+			break
 		}
-
 	}
 
 	return isRegistered
