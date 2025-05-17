@@ -35,9 +35,8 @@ func init() {
 
 	} else {
 		Users = []User{
-			{1, "admin", "admin", 1000000},
-			{2, "user", "user", 1000000},
-			{3, "bagas", "pemula", 100000},
+			{1, "bagas", "bagas", 1000000},
+			{2, "lahra", "lahra", 1000000},
 		}
 		content, err := helpers.SaveToJSON(Users)
 
