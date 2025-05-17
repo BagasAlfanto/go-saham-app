@@ -97,7 +97,7 @@ func UpdatePrice() {
  * Searching Saham
  *
  */
-func Searching(data string) string {
+func Searching(data string) (bool ,string) {
 	helpers.ClearScreen()
 	var result string
 	found := false
@@ -113,10 +113,10 @@ func Searching(data string) string {
 	}
 
 	if !found {
-		return "❌ Saham tidak ditemukan."
+		return false ,"❌ Saham tidak ditemukan."
 	}
 
-	return result
+	return true, result
 }
 
 /*
