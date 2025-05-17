@@ -6,6 +6,7 @@ import (
 	"saham-app/handlers/selling"
 	"saham-app/helpers"
 	"saham-app/model/saham"
+	"saham-app/model/transaction"
 	"saham-app/model/user"
 )
 
@@ -84,7 +85,7 @@ func SearchingSaham() {
 	helpers.ClearScreen()
 	result := saham.Searching(data)
 	helpers.DisplayShowSaham()
-	fmt.Println(result)
+	fmt.Print(result)
 	fmt.Println("===============================================================")
 
 	helpers.ConfirmationScreen()
@@ -123,6 +124,7 @@ func BuyingSaham() {
  */
 func SellSaham() {
 	helpers.ClearScreen()
+	daftar = nil
 
 	userID := user.UserLogin.ID
 	port := user.GetPortfolio(userID)
@@ -152,7 +154,12 @@ func SellSaham() {
 	helpers.ClearScreen()
 
 	namaPerusahaan := daftar[pilihan-1].Nama
-	totalLot := daftar[pilihan-1].Lot
+	totalLot := 0
+	for _, t := range transaction.Transactions {
+		if t.UserID == user.UserLogin.ID && t.NamaPerusahaan == namaPerusahaan {
+			totalLot += t.JumlahLot
+		}
+	}
 
 	fmt.Printf("Jumlah lot yang kamu miliki di %s : %d\n", namaPerusahaan, totalLot)
 	fmt.Print("Masukkan jumlah lot yang ingin dijual: ")
