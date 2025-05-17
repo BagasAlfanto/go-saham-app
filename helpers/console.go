@@ -58,6 +58,12 @@ func DisplayMainMenu(username string) {
  *
  */
 func DisplaySaham() {
+	message := GetMessageValue()
+
+	if message != "" {
+		ShowMessages()
+		ClearMessage()
+	}
 	fmt.Println("======= Saham =======")
 	fmt.Println("1. Lihat Semua Saham")
 	fmt.Println("2. Cari Saham")
