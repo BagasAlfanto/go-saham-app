@@ -13,31 +13,40 @@ import (
  *
  */
 func Purchase(selectedSaham *saham.Saham) {
-  var jumlahLot int
-  fmt.Printf("Masukkan jumlah lot yang ingin dibeli (1 lot = 100 lembar): ")
-  fmt.Scan(&jumlahLot)
+	var jumlahLot int
+	fmt.Printf("Masukkan jumlah lot yang ingin dibeli (1 lot = 100 lembar): ")
+	n, err := fmt.Scan(&jumlahLot)
 
-  totalHarga := selectedSaham.Price_Per_Share * 100 * jumlahLot
+	if n < 1 {
+		helpers.GetMessages("❌ Minimal beli lot adalah 1")
+		return
+	}
+	if n != 1 || err != nil {
+		helpers.GetMessages("❌ Input harus berupa angka")
+		return
+	}
 
-  if user.UserLogin.Saldo < totalHarga {
-    helpers.GetMessages("❌ Saldo tidak cukup untuk melakukan pembelian ini.")
-    return
-  }
+	totalHarga := selectedSaham.Price_Per_Share * 100 * jumlahLot
 
-  user.UserLogin.Saldo -= totalHarga
+	if user.UserLogin.Saldo < totalHarga {
+		helpers.GetMessages("❌ Saldo tidak cukup untuk melakukan pembelian ini.")
+		return
+	}
 
-  transaksi := transaction.Transaction{
-    UserID:         user.UserLogin.ID,
-    NamaPerusahaan: selectedSaham.CompanyName,
-    JumlahLot:      jumlahLot,
-    HargaPerLembar: selectedSaham.Price_Per_Share,
-    Total:          totalHarga,
-    Tipe:           "BUY",
-  }
+	user.UserLogin.Saldo -= totalHarga
 
-  transaction.InsertTransaction(transaksi)
-  transaction.AppendToHistory(transaksi)
+	transaksi := transaction.Transaction{
+		UserID:         user.UserLogin.ID,
+		NamaPerusahaan: selectedSaham.CompanyName,
+		JumlahLot:      jumlahLot,
+		HargaPerLembar: selectedSaham.Price_Per_Share,
+		Total:          totalHarga,
+		Tipe:           "BUY",
+	}
 
-  user.SaveUsers()
-  helpers.GetMessages("✅ Pembelian saham berhasil")
+	transaction.InsertTransaction(transaksi)
+	transaction.AppendToHistory(transaksi)
+
+	user.SaveUsers()
+	helpers.GetMessages("✅ Pembelian saham berhasil")
 }
