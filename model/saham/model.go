@@ -99,16 +99,24 @@ func UpdatePrice() {
  */
 func Searching(data string) string {
 	helpers.ClearScreen()
+	var result string
+	found := false
+
 	for _, saham := range daftarSaham {
 		if strings.EqualFold(saham.StockCode, data) || strings.Contains(strings.ToLower(saham.CompanyName), strings.ToLower(data)) {
-			SearchSaham = &saham
-			return fmt.Sprintf(
-				"| %-15s %-30s %-12d |",
+			found = true
+			result += fmt.Sprintf(
+				"| %-15s %-30s %-12d |\n",
 				saham.StockCode, saham.CompanyName, saham.Price_Per_Share,
 			)
 		}
 	}
-	return "Saham tidak ditemukan."
+
+	if !found {
+		return "❌ Saham tidak ditemukan."
+	}
+
+	return result
 }
 
 /*
