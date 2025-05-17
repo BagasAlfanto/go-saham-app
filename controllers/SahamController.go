@@ -83,12 +83,16 @@ func SearchingSaham() {
 	fmt.Scan(&data)
 
 	helpers.ClearScreen()
-	result := saham.Searching(data)
-	helpers.DisplayShowSaham()
-	fmt.Print(result)
-	fmt.Println("===============================================================")
+	ada, result := saham.Searching(data)
+	if ada {
+		helpers.DisplayShowSaham()
+		fmt.Print(result)
+		fmt.Println("===============================================================")
+		helpers.ConfirmationScreen()
+	} else {
+		helpers.GetMessages(result)
+	}
 
-	helpers.ConfirmationScreen()
 }
 
 /*
