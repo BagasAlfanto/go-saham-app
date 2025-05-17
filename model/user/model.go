@@ -63,12 +63,12 @@ func CheckPassword(username, password string) (bool, string) {
 		if Users[i].Username == username {
 			if Users[i].Password == password {
 				UserLogin = &Users[i]
-				return true, "Login berhasil"
+				return true, "✅ Login berhasil"
 			}
-			return false, "Password salah"
+			return false, "❌ Password salah"
 		}
 	}
-	return false, "Username tidak ditemukan"
+	return false, "❌ Username tidak ditemukan"
 }
 
 /*
