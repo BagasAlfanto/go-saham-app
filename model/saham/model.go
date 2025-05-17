@@ -37,8 +37,8 @@ func init() {
 	} else {
 		daftarSaham = []Saham{
 			{1, "AAPL", "Apple Inc.", 150},
-			{2, "GOOGL", "Alphabet Inc.", 2800},
-			{3, "AMZN", "Amazon.com Inc.", 3400},
+			{2, "GOOGL", "Google Inc.", 1305},
+			{3, "AMZN", "Amazon.com Inc.", 890},
 			{4, "MSFT", "Microsoft Corp.", 299},
 			{5, "TSLA", "Tesla Inc.", 700},
 			{6, "FB", "Meta Platforms Inc.", 350},
