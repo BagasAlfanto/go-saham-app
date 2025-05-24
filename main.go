@@ -56,7 +56,7 @@ func main() {
 
 	if choice == 3 {
 		helpers.ClearScreen()
-		fmt.Println("Terima kasih telah menggunakan Aplikasi Ini. Selamat tinggal!")
+		fmt.Println("Terima kasih telah menggunakan saham-app. Selamat tinggal!")
 		return
 	}
 
