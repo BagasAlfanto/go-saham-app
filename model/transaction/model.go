@@ -56,7 +56,6 @@ func init() {
 func AppendToHistory(t Transaction) {
 	var histories []Transaction
 
-	// Load history.json
 	if helpers.FileExists("history.json") {
 		content, err := helpers.ReadFile("history.json")
 		if err == nil {
@@ -64,7 +63,6 @@ func AppendToHistory(t Transaction) {
 		}
 	}
 
-	// Tambahkan transaksi baru
 	t.TransactionID = len(histories) + 1
 	histories = append(histories, t)
 
