@@ -5,7 +5,7 @@ import (
 )
 
 /*
- * Mendapatkan data saham dari user 
+ * Mendapatkan data saham dari user
  *
  */
 func GetPortfolio(userID int) map[string]struct {
