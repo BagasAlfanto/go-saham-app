@@ -63,7 +63,7 @@ func ShowSaham() {
 	helpers.DisplayShowSaham()
 
 	for _, daftarSaham := range saham.GetSaham() {
-		fmt.Printf("| %-15s %-30s %-12d |\n", daftarSaham.StockCode, daftarSaham.CompanyName, daftarSaham.Price_Per_Share)
+		fmt.Printf("| %-15s %-30s %-12d |\n", daftarSaham.SahamCode, daftarSaham.CompanyName, daftarSaham.Price_Per_Share)
 	}
 	fmt.Println("===============================================================")
 	saham.UpdatePrice()
@@ -105,7 +105,7 @@ func BuyingSaham() {
 	helpers.DisplayShowSaham()
 
 	for _, daftarSaham := range saham.GetSaham() {
-		fmt.Printf("| %-15s %-30s %-12d |\n", daftarSaham.StockCode, daftarSaham.CompanyName, daftarSaham.Price_Per_Share)
+		fmt.Printf("| %-15s %-30s %-12d |\n", daftarSaham.SahamCode, daftarSaham.CompanyName, daftarSaham.Price_Per_Share)
 	}
 	fmt.Println("===============================================================")
 
