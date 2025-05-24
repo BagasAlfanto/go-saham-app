@@ -68,11 +68,10 @@ func ShowTransactionHistory() {
 		fmt.Printf("%-5s %-10s %-30s %-10s %-15s %-15s\n", "ID", "Tipe", "Perusahaan", "Lot", "Harga/Lembar", "Total")
 		fmt.Println("--------------------------------------------------------------------------------")
 
-		for _, t := range transaksiUser {
-			i := 1
+		for i, t := range transaksiUser {
+			i++
 			fmt.Printf("%-5d %-10s %-30s %-10d %-15d %-15d\n",
 				i, t.Tipe, t.NamaPerusahaan, t.JumlahLot, t.HargaPerLembar, t.Total)
-			i++
 		}
 	}
 
@@ -99,7 +98,6 @@ func ShowPortfolio() {
 		return
 	}
 
-	// Ringkas transaksi berdasarkan nama perusahaan
 	portofolio := make(map[string]int)
 	modalMap := make(map[string]int)
 
