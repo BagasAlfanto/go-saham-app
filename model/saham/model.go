@@ -13,7 +13,7 @@ import (
  */
 type Saham struct {
 	IDSaham         int
-	StockCode       string
+	SahamCode       string
 	CompanyName     string
 	Price_Per_Share int
 }
@@ -37,7 +37,7 @@ func init() {
 	} else {
 		daftarSaham = []Saham{
 			{1, "AAPL", "Apple Inc.", 150},
-			{2, "GOOGL", "Google Inc.", 1305},
+			{2, "GOOGL", "Google Inc.", 999},
 			{3, "AMZN", "Amazon.com Inc.", 890},
 			{4, "MSFT", "Microsoft Corp.", 299},
 			{5, "TSLA", "Tesla Inc.", 700},
@@ -97,30 +97,35 @@ func UpdatePrice() {
  * Searching Saham
  *
  */
-func Searching(data string) (bool ,string) {
+func Searching(data string) (bool, string) {
 	helpers.ClearScreen()
 	var result string
 	found := false
+	n := len(daftarSaham)
 
-	for _, saham := range daftarSaham {
-		if strings.EqualFold(saham.StockCode, data) || strings.Contains(strings.ToLower(saham.CompanyName), strings.ToLower(data)) {
+	// Sequential/Linear Search implementation
+	for i := 0; i < n; i++ {
+		// Case-insensitive comparison for both stock code and company name
+		if strings.EqualFold(daftarSaham[i].SahamCode, data) || strings.Contains(strings.ToLower(daftarSaham[i].CompanyName), strings.ToLower(data)) {
 			found = true
 			result += fmt.Sprintf(
 				"| %-15s %-30s %-12d |\n",
-				saham.StockCode, saham.CompanyName, saham.Price_Per_Share,
+				daftarSaham[i].SahamCode,
+				daftarSaham[i].CompanyName,
+				daftarSaham[i].Price_Per_Share,
 			)
 		}
 	}
 
 	if !found {
-		return false ,"❌ Saham tidak ditemukan."
+		return false, "❌ Saham tidak ditemukan."
 	}
 
 	return true, result
 }
 
 /*
- * Mengurutkan daftar saham dari harga terendah
+ * Mengurutkan daftar saham dari harga terendah menggunakan insertion sort
  *
  */
 func SortAscending() {
@@ -130,19 +135,19 @@ func SortAscending() {
 	helpers.ClearScreen()
 	n := len(sorted)
 	for i := 1; i < n; i++ {
-		key := sorted[i]
+		sort := sorted[i]
 		j := i - 1
 
-		for j >= 0 && sorted[j].Price_Per_Share > key.Price_Per_Share {
+		for j >= 0 && sorted[j].Price_Per_Share > sort.Price_Per_Share {
 			sorted[j+1] = sorted[j]
 			j--
 		}
-		sorted[j+1] = key
+		sorted[j+1] = sort
 	}
 
 	helpers.DisplayShowSaham()
 	for _, saham := range sorted {
-		fmt.Printf("| %-15s %-30s %-12d |\n", saham.StockCode, saham.CompanyName, saham.Price_Per_Share)
+		fmt.Printf("| %-15s %-30s %-12d |\n", saham.SahamCode, saham.CompanyName, saham.Price_Per_Share)
 	}
 	fmt.Println("===============================================================")
 
@@ -150,7 +155,7 @@ func SortAscending() {
 }
 
 /*
- * Mengurutkan daftar saham dari harga tertinggi
+ * Mengurutkan daftar saham dari harga tertinggi menggunakan selection sort
  *
  */
 func SortDescending() {
@@ -159,20 +164,21 @@ func SortDescending() {
 
 	helpers.ClearScreen()
 	n := len(sorted)
-	for i := 1; i < n; i++ {
-		key := sorted[i]
-		j := i - 1
-
-		for j >= 0 && sorted[j].Price_Per_Share < key.Price_Per_Share {
-			sorted[j+1] = sorted[j]
-			j--
+	for i := 0; i < n-1; i++ {
+		maxIdx := i
+		for j := i + 1; j < n; j++ {
+			if sorted[j].Price_Per_Share > sorted[maxIdx].Price_Per_Share {
+				maxIdx = j
+			}
 		}
-		sorted[j+1] = key
+		if maxIdx != i {
+			sorted[i], sorted[maxIdx] = sorted[maxIdx], sorted[i]
+		}
 	}
 
 	helpers.DisplayShowSaham()
 	for _, saham := range sorted {
-		fmt.Printf("| %-15s %-30s %-12d |\n", saham.StockCode, saham.CompanyName, saham.Price_Per_Share)
+		fmt.Printf("| %-15s %-30s %-12d |\n", saham.SahamCode, saham.CompanyName, saham.Price_Per_Share)
 	}
 	fmt.Println("===============================================================")
 
@@ -185,7 +191,7 @@ func SortDescending() {
  */
 func FindSahamByCodeOrName(input string) *Saham {
 	for _, s := range daftarSaham {
-		if strings.EqualFold(s.StockCode, input) || strings.Contains(strings.ToLower(s.CompanyName), strings.ToLower(input)) {
+		if strings.EqualFold(s.SahamCode, input) || strings.Contains(strings.ToLower(s.CompanyName), strings.ToLower(input)) {
 			return &s
 		}
 	}
