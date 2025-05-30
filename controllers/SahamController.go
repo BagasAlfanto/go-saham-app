@@ -35,12 +35,15 @@ func SahamMenu() {
 
 		switch choice {
 		case 1:
+			saham.UpdatePrice()
 			ShowSaham()
 		case 2:
 			SearchingSaham()
 		case 3:
+			saham.UpdatePrice()
 			saham.SortAscending()
 		case 4:
+			saham.UpdatePrice()
 			saham.SortDescending()
 		case 5:
 			isRunning = true
@@ -49,7 +52,6 @@ func SahamMenu() {
 		if choice != 5 {
 			choice = 0
 		}
-		saham.UpdatePrice()
 	}
 
 }
@@ -63,10 +65,9 @@ func ShowSaham() {
 	helpers.DisplayShowSaham()
 
 	for _, daftarSaham := range saham.GetSaham() {
-		fmt.Printf("| %-15s %-30s %-12d |\n", daftarSaham.SahamCode, daftarSaham.CompanyName, daftarSaham.Price_Per_Share)
+		fmt.Printf("| %-15s %-30s %-12s |\n", daftarSaham.SahamCode, daftarSaham.CompanyName, helpers.NominalFormat(daftarSaham.Price_Per_Share))
 	}
 	fmt.Println("===============================================================")
-	saham.UpdatePrice()
 
 	helpers.ConfirmationScreen()
 }
@@ -105,7 +106,7 @@ func BuyingSaham() {
 	helpers.DisplayShowSaham()
 
 	for _, daftarSaham := range saham.GetSaham() {
-		fmt.Printf("| %-15s %-30s %-12d |\n", daftarSaham.SahamCode, daftarSaham.CompanyName, daftarSaham.Price_Per_Share)
+		fmt.Printf("| %-15s %-30s %-12s |\n", daftarSaham.SahamCode, daftarSaham.CompanyName, helpers.NominalFormat(daftarSaham.Price_Per_Share))
 	}
 	fmt.Println("===============================================================")
 
@@ -114,8 +115,7 @@ func BuyingSaham() {
 
 	selected := saham.FindSahamByCodeOrName(choices)
 	if selected == nil {
-		fmt.Println("❌ Saham tidak ditemukan.")
-		helpers.ConfirmationScreen()
+		helpers.GetMessages("❌ Saham tidak ditemukan.")
 		return
 	}
 
@@ -141,7 +141,14 @@ func SellSaham() {
 	i := 1
 	fmt.Println("===== Saham yang Dimiliki =====")
 	for nama, data := range port {
-		fmt.Printf("%d. %s - %d lot\n", i, nama, data.TotalLot)
+		harga := 0
+		for _, s := range saham.GetSaham() {
+			if s.CompanyName == nama {
+				harga = s.Price_Per_Share
+				break
+			}
+		}
+		fmt.Printf("%d. %s - %d lot (Harga per lembar: %s)\n", i, nama, data.TotalLot, helpers.NominalFormat(harga))
 		daftar = append(daftar, PortofolioItem{nama, data.TotalLot})
 		i++
 	}
@@ -151,7 +158,7 @@ func SellSaham() {
 	fmt.Scan(&pilihan)
 
 	if pilihan < 1 || pilihan > len(daftar) {
-		helpers.GetMessages("❌ Pilihan tidak valid.")
+		helpers.GetMessages("❌ Saham tidak ditemukan.")
 		return
 	}
 
