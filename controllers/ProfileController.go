@@ -21,7 +21,7 @@ func ShowProfile() {
 		profile := user.GetUser()
 		fmt.Println("===== Profil Pengguna =====")
 		fmt.Println("Username :", profile.Username)
-		fmt.Println("Saldo    :", profile.Saldo)
+		fmt.Println("Saldo    :", helpers.NominalFormat(profile.Saldo))
 		fmt.Println()
 
 		for choice < 1 || choice > 3 {
@@ -59,19 +59,20 @@ func ShowTransactionHistory() {
 	profile := user.GetUser()
 	fmt.Println("===== Riwayat Transaksi Saham =====")
 	fmt.Println("Username :", profile.Username)
+	fmt.Println("Saldo    :", helpers.NominalFormat(profile.Saldo))
 	fmt.Println()
 
 	transaksiUser := transaction.GetHistoryByUserID(user.UserLogin.ID)
 	if len(transaksiUser) == 0 {
 		fmt.Println("❌ Belum ada transaksi saham.")
 	} else {
-		fmt.Printf("%-5s %-10s %-30s %-10s %-15s %-15s\n", "ID", "Tipe", "Perusahaan", "Lot", "Harga/Lembar", "Total")
-		fmt.Println("--------------------------------------------------------------------------------")
+		fmt.Printf("%-5s %-10s %-30s %-10s %-15s %-15s\n", "No", "Tipe", "Perusahaan", "Lot", "Harga/Lembar", "Total")
+		fmt.Println("------------------------------------------------------------------------------------------")
 
 		for i, t := range transaksiUser {
 			i++
-			fmt.Printf("%-5d %-10s %-30s %-10d %-15d %-15d\n",
-				i, t.Tipe, t.NamaPerusahaan, t.JumlahLot, t.HargaPerLembar, t.Total)
+			fmt.Printf("%-5d %-10s %-30s %-10d %-15s %-15s\n",
+				i, t.Tipe, t.NamaPerusahaan, t.JumlahLot, helpers.NominalFormat(t.HargaPerLembar), helpers.NominalFormat(t.Total))
 		}
 	}
 
@@ -84,11 +85,12 @@ func ShowTransactionHistory() {
  */
 func ShowPortfolio() {
 	helpers.ClearScreen()
+	saham.UpdatePrice()
 
 	profile := user.GetUser()
 	fmt.Println("===== Portofolio Pengguna =====")
 	fmt.Println("Username :", profile.Username)
-	fmt.Println("Saldo    :", profile.Saldo)
+	fmt.Println("Saldo    :", helpers.NominalFormat(profile.Saldo))
 	fmt.Println()
 
 	transaksiUser := transaction.GetTransactionsByUserID(user.UserLogin.ID)
@@ -106,10 +108,12 @@ func ShowPortfolio() {
 		modalMap[t.NamaPerusahaan] += t.Total
 	}
 
-	fmt.Printf("%-30s %-10s %-15s %-15s %-15s\n", "Perusahaan", "Lot", "Harga Saat Ini", "Nilai", "Untung/Rugi")
-	fmt.Println("-------------------------------------------------------------------------------------------")
+	fmt.Printf("%-5s %-30s %-10s %-15s %-15s %-15s\n", "No", "Perusahaan", "Lot", "Harga Saat Ini", "Nilai", "Untung/Rugi")
+	fmt.Println("-----------------------------------------------------------------------------------------------------")
 
+	i := 1
 	for nama, totalLot := range portofolio {
+
 		s := saham.FindSahamByName(nama)
 		if s == nil {
 			fmt.Printf("%-30s %-10d %-15s %-15s %-15s\n", nama, totalLot, "-", "-", "-")
@@ -119,14 +123,11 @@ func ShowPortfolio() {
 		hargaSekarang := s.Price_Per_Share
 		nilai := hargaSekarang * 100 * totalLot
 		modal := modalMap[nama]
-		selisih := nilai - modal
+		selisih, status := saham.CalculateDifference(nilai, modal)
 
-		status := "Untung"
-		if selisih < 0 {
-			status = "Rugi"
-		}
+		fmt.Printf("%-5d %-30s %-10d %-15s %-15s %s: %s\n", i, nama, totalLot, helpers.NominalFormat(hargaSekarang), helpers.NominalFormat(nilai), status, helpers.NominalFormat(selisih))
+		i++
 
-		fmt.Printf("%-30s %-10d %-15d %-15d %s: %d\n", nama, totalLot, hargaSekarang, nilai, status, selisih)
 	}
 
 	helpers.ConfirmationScreen()
