@@ -1,7 +1,9 @@
 package helpers
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 )
 
 var messages string
@@ -86,15 +88,49 @@ func DisplayShowSaham() {
 }
 
 /*
- * Menampilkan konfirmasi
+ * Format nominal mata uang Indonesia
+ *
+ */
+func NominalFormat(nominal int) string {
+  return fmt.Sprintf("Rp%s", formatRibuan(nominal))
+}
+
+/*
+ * Convert format ribuan 
+ *
+ */
+func formatRibuan(n int) string {
+  s := fmt.Sprintf("%d", n)
+  nLen := len(s)
+  if nLen <= 3 {
+    return s
+  }
+  var result []byte
+  mod := nLen % 3
+  if mod > 0 {
+    result = append(result, s[:mod]...)
+    if nLen > mod {
+      result = append(result, '.')
+    }
+  }
+  for i := mod; i < nLen; i += 3 {
+    result = append(result, s[i:i+3]...)
+    if i+3 < nLen {
+      result = append(result, '.')
+    }
+  }
+  return string(result)
+}
+
+/*
+ * Menampilkan konfirmasi dengan menekan Enter
  *
  */
 func ConfirmationScreen() {
-	var back string
-	for back != "ya" {
-		fmt.Println("Kembali ke menu utama? (ya)")
-		fmt.Scan(&back)
-	}
+	fmt.Println("Tekan Enter untuk kembali ke menu utama...")
+	reader := bufio.NewReader(os.Stdin)
+	reader.ReadString('\n')
+	reader.ReadString('\n')
 }
 
 /*
