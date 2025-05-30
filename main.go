@@ -92,7 +92,7 @@ func main() {
 		if choice != 5 {
 			choice = 0
 		}
-		saham.UpdatePrice()
+		
 	}
 
 }
