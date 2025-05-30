@@ -15,26 +15,22 @@ import (
 func ProcessSell(namaPerusahaan string, lotJual int) {
 	userID := user.UserLogin.ID
 
-	// Validasi saham
 	sahamNow := saham.FindSahamByName(namaPerusahaan)
 	if sahamNow == nil {
 		helpers.GetMessages("❌ Saham tidak ditemukan.")
 		return
 	}
 
-	// Ambil total lot dimiliki
 	port := user.GetPortfolio(userID)
 	data, exists := port[namaPerusahaan]
 	if !exists || lotJual <= 0 || lotJual > data.TotalLot {
-		helpers.GetMessages("❌ Jumlah lot tidak valid atau tidak punya saham tersebut.")
+		helpers.GetMessages("❌ Jumlah lot tidak valid")
 		return
 	}
 
-	// Hitung nilai jual
 	totalJual := lotJual * 100 * sahamNow.Price_Per_Share
 	user.UserLogin.Saldo += totalJual
 
-	// Catat transaksi SELL ke history
 	transaksiJual := transaction.Transaction{
 		UserID:         userID,
 		NamaPerusahaan: namaPerusahaan,
@@ -45,7 +41,6 @@ func ProcessSell(namaPerusahaan string, lotJual int) {
 	}
 	transaction.AppendToHistory(transaksiJual)
 
-	// Kurangi dari portofolio (hapus dari Transactions)
 	sisaLot := lotJual
 	for i := range transaction.Transactions {
 		t := &transaction.Transactions[i]
@@ -60,7 +55,6 @@ func ProcessSell(namaPerusahaan string, lotJual int) {
 		}
 	}
 
-	// Filter ulang Transactions
 	var updated []transaction.Transaction
 	for _, t := range transaction.Transactions {
 		if t.JumlahLot > 0 {
@@ -69,7 +63,6 @@ func ProcessSell(namaPerusahaan string, lotJual int) {
 	}
 	transaction.Transactions = updated
 
-  // Simpan ke database dan history transaksi
 	user.SaveUsers()
 	transaction.SaveTransactions()
 
