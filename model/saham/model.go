@@ -109,10 +109,10 @@ func Searching(data string) (bool, string) {
 		if strings.EqualFold(daftarSaham[i].SahamCode, data) || strings.Contains(strings.ToLower(daftarSaham[i].CompanyName), strings.ToLower(data)) {
 			found = true
 			result += fmt.Sprintf(
-				"| %-15s %-30s %-12d |\n",
+				"| %-15s %-30s %-12s |\n",
 				daftarSaham[i].SahamCode,
 				daftarSaham[i].CompanyName,
-				daftarSaham[i].Price_Per_Share,
+				helpers.NominalFormat(daftarSaham[i].Price_Per_Share),
 			)
 		}
 	}
@@ -147,7 +147,7 @@ func SortAscending() {
 
 	helpers.DisplayShowSaham()
 	for _, saham := range sorted {
-		fmt.Printf("| %-15s %-30s %-12d |\n", saham.SahamCode, saham.CompanyName, saham.Price_Per_Share)
+		fmt.Printf("| %-15s %-30s %-12s |\n", saham.SahamCode, saham.CompanyName, helpers.NominalFormat(saham.Price_Per_Share))
 	}
 	fmt.Println("===============================================================")
 
@@ -178,7 +178,7 @@ func SortDescending() {
 
 	helpers.DisplayShowSaham()
 	for _, saham := range sorted {
-		fmt.Printf("| %-15s %-30s %-12d |\n", saham.SahamCode, saham.CompanyName, saham.Price_Per_Share)
+		fmt.Printf("| %-15s %-30s %-12s |\n", saham.SahamCode, saham.CompanyName, helpers.NominalFormat(saham.Price_Per_Share))
 	}
 	fmt.Println("===============================================================")
 
@@ -198,6 +198,10 @@ func FindSahamByCodeOrName(input string) *Saham {
 	return nil
 }
 
+/*
+ * Mencari saham by nama perusahaan
+ *
+ */
 func FindSahamByName(name string) *Saham {
 	for _, s := range daftarSaham {
 		if strings.EqualFold(s.CompanyName, name) {
@@ -205,6 +209,21 @@ func FindSahamByName(name string) *Saham {
 		}
 	}
 	return nil
+}
+
+/*
+ * Menghitung selisih antara nilai sekarang dan modal
+ *
+ *
+ */
+func CalculateDifference(nilaiSekarang, modal int) (selisih int, status string) {
+	selisih = nilaiSekarang - modal
+	if selisih < 0 {
+		status = "Rugi"
+	} else {
+		status = "Untung"
+	}
+	return
 }
 
 /*
