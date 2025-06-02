@@ -1,9 +1,7 @@
 # go-saham-app 
----
 Aplikasi saham berbasis Go yang dirancang untuk memudahkan analisis dan monitoring data pasar saham secara real-time.
 
 ## 📌 Deskripsi
----
 - go-saham-app adalah aplikasi berbasis bahasa pemrograman Go yang menyediakan fitur untuk:
 
 - Mengambil data saham terkini dari sumber terpercaya.
@@ -15,7 +13,6 @@ Aplikasi saham berbasis Go yang dirancang untuk memudahkan analisis dan monitori
 - Aplikasi ini cocok bagi para investor, analis, dan pengembang yang ingin membangun aplikasi terkait pasar saham menggunakan Go.
 
 ## 🚀 Fitur Utama
----
 - Pengambilan data saham real-time dari API publik.
 
 - Analisis teknikal dasar, seperti moving average dan volume perdagangan.
@@ -25,7 +22,6 @@ Aplikasi saham berbasis Go yang dirancang untuk memudahkan analisis dan monitori
 - Modular dan mudah dikembangkan, dengan struktur kode yang bersih dan terorganisir.
 
 ## 🛠️ Teknologi
----
 - Bahasa Pemrograman: Go (Golang)
 
 - Format Data: JSON
@@ -35,7 +31,7 @@ Aplikasi saham berbasis Go yang dirancang untuk memudahkan analisis dan monitori
 - Manajemen Dependensi: Go Modules
 
 ## 📦 Instalasi
----
+
 ### Prasyarat
 - Go versi 1.18 atau lebih baru
 - Koneksi internet untuk mengakses API saham
@@ -72,7 +68,6 @@ Kontribusi sangat diterima! Silakan fork repository ini, buat cabang baru, lakuk
 Pastikan untuk mengikuti pedoman kontribusi yang telah ditetapkan.
 
 ## 📬 Kontak
----
 Nama: Bagas Alfanto
 
 Email: bagasalfanto123@gmail.com
