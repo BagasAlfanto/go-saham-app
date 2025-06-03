@@ -84,8 +84,8 @@ func UpdatePrice() {
 		priceChange := ChangePricing()
 		daftarSaham[i].Price_Per_Share += priceChange
 
-		if daftarSaham[i].Price_Per_Share < 0 {
-			daftarSaham[i].Price_Per_Share = 0
+		if daftarSaham[i].Price_Per_Share < 50 {
+			daftarSaham[i].Price_Per_Share = 50
 		}
 		if daftarSaham[i].Price_Per_Share > 5000 {
 			daftarSaham[i].Price_Per_Share = 5000
@@ -94,7 +94,7 @@ func UpdatePrice() {
 }
 
 /*
- * Searching Saham
+ * Searching Saham menggunakan Sequential Search
  *
  */
 func Searching(data string) (bool, string) {
@@ -103,9 +103,7 @@ func Searching(data string) (bool, string) {
 	found := false
 	n := len(daftarSaham)
 
-	// Sequential/Linear Search implementation
 	for i := 0; i < n; i++ {
-		// Case-insensitive comparison for both stock code and company name
 		if strings.EqualFold(daftarSaham[i].SahamCode, data) || strings.Contains(strings.ToLower(daftarSaham[i].CompanyName), strings.ToLower(data)) {
 			found = true
 			result += fmt.Sprintf(
@@ -119,6 +117,62 @@ func Searching(data string) (bool, string) {
 
 	if !found {
 		return false, "❌ Saham tidak ditemukan."
+	}
+
+	return true, result
+}
+
+/*
+ * Mencari saham berdasarkan rentang harga Binary Search
+ *
+ */
+func SearchingByRange(min, max int) (bool, string) {
+	sorted := make([]Saham, len(daftarSaham))
+	copy(sorted, daftarSaham)
+
+	helpers.ClearScreen()
+	var result string
+	found := false
+
+	n := len(sorted)
+	for i := 1; i < n; i++ {
+		key := sorted[i]
+		j := i - 1
+		for j >= 0 && sorted[j].Price_Per_Share > key.Price_Per_Share {
+			sorted[j+1] = sorted[j]
+			j--
+		}
+		sorted[j+1] = key
+	}
+
+	low, high := 0, n-1
+	start := -1
+	for low <= high {
+		mid := (low + high) / 2
+		if sorted[mid].Price_Per_Share >= min {
+			start = mid
+			high = mid - 1
+		} else {
+			low = mid + 1
+		}
+	}
+
+	if start == -1 {
+		return false, "❌ Saham tidak ditemukan dalam rentang harga tersebut."
+	}
+
+	for i := start; i < n && sorted[i].Price_Per_Share <= max; i++ {
+		found = true
+		result += fmt.Sprintf(
+			"| %-15s %-30s %-12s |\n",
+			sorted[i].SahamCode,
+			sorted[i].CompanyName,
+			helpers.NominalFormat(sorted[i].Price_Per_Share),
+		)
+	}
+
+	if !found {
+		return false, "❌ Saham tidak ditemukan dalam rentang harga tersebut."
 	}
 
 	return true, result
