@@ -68,10 +68,11 @@ func DisplaySaham() {
 	}
 	fmt.Println("======= Saham =======")
 	fmt.Println("1. Lihat Semua Saham")
-	fmt.Println("2. Cari Saham")
-	fmt.Println("3. Urutkan dari harga terrendah")
-	fmt.Println("4. Urutkan dari harga tertinggi")
-	fmt.Println("5. Kembali Ke Menu Utama")
+	fmt.Println("2. Cari Saham dengan Kode/Nama Perusahaan")
+	fmt.Println("3. Cari saham dengan range harga")
+	fmt.Println("4. Urutkan dari harga terrendah")
+	fmt.Println("5. Urutkan dari harga tertinggi")
+	fmt.Println("6. Kembali Ke Menu Utama")
 	fmt.Println("======================")
 }
 
@@ -92,34 +93,34 @@ func DisplayShowSaham() {
  *
  */
 func NominalFormat(nominal int) string {
-  return fmt.Sprintf("Rp%s", formatRibuan(nominal))
+	return fmt.Sprintf("Rp%s", formatRibuan(nominal))
 }
 
 /*
- * Convert format ribuan 
+ * Convert format ribuan
  *
  */
 func formatRibuan(n int) string {
-  s := fmt.Sprintf("%d", n)
-  nLen := len(s)
-  if nLen <= 3 {
-    return s
-  }
-  var result []byte
-  mod := nLen % 3
-  if mod > 0 {
-    result = append(result, s[:mod]...)
-    if nLen > mod {
-      result = append(result, '.')
-    }
-  }
-  for i := mod; i < nLen; i += 3 {
-    result = append(result, s[i:i+3]...)
-    if i+3 < nLen {
-      result = append(result, '.')
-    }
-  }
-  return string(result)
+	s := fmt.Sprintf("%d", n)
+	nLen := len(s)
+	if nLen <= 3 {
+		return s
+	}
+	var result []byte
+	mod := nLen % 3
+	if mod > 0 {
+		result = append(result, s[:mod]...)
+		if nLen > mod {
+			result = append(result, '.')
+		}
+	}
+	for i := mod; i < nLen; i += 3 {
+		result = append(result, s[i:i+3]...)
+		if i+3 < nLen {
+			result = append(result, '.')
+		}
+	}
+	return string(result)
 }
 
 /*
