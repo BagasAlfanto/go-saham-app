@@ -5,6 +5,7 @@ import (
 	"saham-app/handlers/purchase"
 	"saham-app/handlers/selling"
 	"saham-app/helpers"
+	portfolio "saham-app/model/portofolio"
 	"saham-app/model/saham"
 	"saham-app/model/transaction"
 	"saham-app/model/user"
@@ -28,7 +29,7 @@ func SahamMenu() {
 		helpers.ClearScreen()
 		helpers.DisplaySaham()
 
-		for choice < 1 || choice > 5 {
+		for choice < 1 || choice > 6 {
 			fmt.Print("Masukan Pilihan Anda : ")
 			fmt.Scan(&choice)
 		}
@@ -38,18 +39,20 @@ func SahamMenu() {
 			saham.UpdatePrice()
 			ShowSaham()
 		case 2:
-			SearchingSaham()
+			SearchingSahamCodeOrName()
 		case 3:
-			saham.UpdatePrice()
-			saham.SortAscending()
+			SearchingSahamByRange()
 		case 4:
 			saham.UpdatePrice()
-			saham.SortDescending()
+			saham.SortAscending()
 		case 5:
+			saham.UpdatePrice()
+			saham.SortDescending()
+		case 6:
 			isRunning = true
 		}
 
-		if choice != 5 {
+		if choice != 6 {
 			choice = 0
 		}
 	}
@@ -76,7 +79,7 @@ func ShowSaham() {
  * Menampilkan saham yang dicari
  *
  */
-func SearchingSaham() {
+func SearchingSahamCodeOrName() {
 	helpers.ClearScreen()
 	var data string
 	fmt.Println("================== Cari Saham ==================")
@@ -94,6 +97,31 @@ func SearchingSaham() {
 		helpers.GetMessages(result)
 	}
 
+}
+
+/*
+ * Menampilkan saham berdasarkan range harga
+ *
+ */
+func SearchingSahamByRange() {
+	helpers.ClearScreen()
+	var min, max int
+	fmt.Println("================== Cari Saham ==================")
+	fmt.Print("Masukan Harga Minimum : ")
+	fmt.Scan(&min)
+	fmt.Print("Masukan Harga Maksimum : ")
+	fmt.Scan(&max)
+
+	ada, result := saham.SearchingByRange(min, max)
+	if ada {
+		helpers.ClearScreen()
+		helpers.DisplayShowSaham()
+		fmt.Print(result)
+		fmt.Println("===============================================================")
+		helpers.ConfirmationScreen()
+	} else {
+		helpers.GetMessages(result)
+	}
 }
 
 /*
@@ -131,7 +159,7 @@ func SellSaham() {
 	daftar = nil
 
 	userID := user.UserLogin.ID
-	port := user.GetPortfolio(userID)
+	port := portfolio.GetPortfolio(userID)
 
 	if len(port) == 0 {
 		helpers.GetMessages("❌ Kamu belum memiliki saham.")
