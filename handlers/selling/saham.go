@@ -3,6 +3,7 @@ package selling
 import (
 	"fmt"
 	"saham-app/helpers"
+	portfolio "saham-app/model/portofolio"
 	"saham-app/model/saham"
 	"saham-app/model/transaction"
 	"saham-app/model/user"
@@ -21,7 +22,7 @@ func ProcessSell(namaPerusahaan string, lotJual int) {
 		return
 	}
 
-	port := user.GetPortfolio(userID)
+	port := portfolio.GetPortfolio(userID)
 	data, exists := port[namaPerusahaan]
 	if !exists || lotJual <= 0 || lotJual > data.TotalLot {
 		helpers.GetMessages("❌ Jumlah lot tidak valid")
