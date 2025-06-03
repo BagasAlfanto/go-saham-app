@@ -1,10 +1,12 @@
-# go-saham-app 
-Aplikasi saham berbasis Go yang dirancang untuk memudahkan analisis dan monitoring data pasar saham secara real-time.
+# go-saham-app
+
+Saham-App merupakan aplikasi simulasi saham sederhana yang dapat memudahkan pengguna untuk belajar tentang dunia saham. Aplikasi ini dibuat menggunakan bahasa Go dan dijalankan di terminal
 
 ## 📌 Deskripsi
-- go-saham-app adalah aplikasi berbasis bahasa pemrograman Go yang menyediakan fitur untuk:
 
-- Mengambil data saham terkini dari sumber terpercaya.
+go-saham-app adalah aplikasi berbasis bahasa pemrograman Go yang menyediakan fitur untuk:
+
+- Belajar jual beli saham dengan saldo virtual.
 
 - Menganalisis pergerakan harga saham.
 
@@ -12,62 +14,80 @@ Aplikasi saham berbasis Go yang dirancang untuk memudahkan analisis dan monitori
 
 - Aplikasi ini cocok bagi para investor, analis, dan pengembang yang ingin membangun aplikasi terkait pasar saham menggunakan Go.
 
+- Sangat user friendly
+
 ## 🚀 Fitur Utama
-- Pengambilan data saham real-time dari API publik.
+
+- Simulasi jual beli saham dengan saldo virtual.
 
 - Analisis teknikal dasar, seperti moving average dan volume perdagangan.
 
-- Output dalam format JSON, memudahkan integrasi dengan aplikasi lain.
+- Penyajian data saham dalam format yang mudah dipahami.
 
-- Modular dan mudah dikembangkan, dengan struktur kode yang bersih dan terorganisir.
+- Output data dalam format JSON untuk kemudahan integrasi.
+
+- Struktur kode modular dan mudah dikembangkan.
+
+- Antarmuka berbasis terminal yang ramah pengguna.
+
+- Dokumentasi lengkap untuk memudahkan penggunaan dan pengembangan.
 
 ## 🛠️ Teknologi
+
 - Bahasa Pemrograman: Go (Golang)
 
 - Format Data: JSON
-
-- API Sumber Data: Sumber API Saham
 
 - Manajemen Dependensi: Go Modules
 
 ## 📦 Instalasi
 
 ### Prasyarat
+
 - Go versi 1.18 atau lebih baru
 - Koneksi internet untuk mengakses API saham
 
 ### Langkah Instalasi
+
 Clone repository ini:
+
 ```
 git clone https://github.com/BagasAlfanto/go-saham-app.git
 ```
 
 Masuk ke direktori proyek:
+
 ```
 cd go-saham-app
 ```
 
 Instal dependensi:
+
 ```
 go mod tidy
 ```
 
 Jalankan aplikasi:
+
 ```
 go run main.go
 ```
 
 ## 📚 Dokumentasi
+
 Untuk dokumentasi lebih lanjut, silakan kunjungi Wiki Repository.
 
 ## 📄 Lisensi
+
 Proyek ini tidak memiliki lisensi.
 
 ## 🤝 Kontribusi
+
 Kontribusi sangat diterima! Silakan fork repository ini, buat cabang baru, lakukan perubahan, dan ajukan pull request.
 Pastikan untuk mengikuti pedoman kontribusi yang telah ditetapkan.
 
 ## 📬 Kontak
+
 Nama: Bagas Alfanto
 
 Email: bagasalfanto123@gmail.com
